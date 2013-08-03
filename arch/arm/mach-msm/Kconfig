@@ -168,6 +168,7 @@ config ARCH_MSM8960
 	select ARCH_SPARSEMEM_ENABLE
 	select ARCH_HAS_HOLES_MEMORYMODEL
 	select CLEANCACHE
+	select QCACHE
 	select MSM_MULTIMEDIA_USE_ION
 	select MULTI_IRQ_HANDLER
 	select MSM_PM8X60 if PM
@@ -233,6 +234,7 @@ config ARCH_APQ8064
 	select CPU_HAS_L2_PMU
 	select HOLES_IN_ZONE if SPARSEMEM
 	select CLEANCACHE
+	select QCACHE
 	select MIGHT_HAVE_PCI
 	select ARCH_SUPPORTS_MSI
 	select ARM_HAS_SG_CHAIN
@@ -1072,6 +1074,13 @@ config MACH_JF_CMCC
 	help
 	  Support for the Samsung JF device.
 
+config MACH_JF_CMCCCSFB
+	depends on ARCH_APQ8064
+	default n
+	bool "APQ8064 Samsung JF_CMCC_CSFB"
+	help
+	  Support for the Samsung JF device.
+
 config PHYS_OFFSET
 	hex
 	default "0x40800000" if ARCH_MSM9615
@@ -1088,13 +1097,6 @@ config PHYS_OFFSET
 	default "0x20000000" if ARCH_QSD8X50
 	default "0x40200000" if ARCH_MSM8X60
 	default "0x10000000"
-
-config HAVE_END_MEM
-	bool "Specify highest physical RAM address at compile time"
-
-config END_MEM
-	hex "Highest physical address where system RAM resides"
-	depends on HAVE_END_MEM
 
 config KERNEL_MSM_CONTIG_MEM_REGION
 	bool "Enable in-kernel contiguous memory region"
@@ -1763,7 +1765,25 @@ config MSM_CPU_FREQ_MIN
 	depends on MSM_CPU_FREQ_SET_MIN_MAX
 	default 245760
 
+config CPU_OVERCLOCK
+	bool "Enable CPU Overclocking option"
+	default n
+	help
+	Krait overclocking
+
+config LOW_CPUCLOCKS
+	bool "Enable ultra low CPU clocks"
+	default n
+	help
+	  Ultra low cpu frequencies enabled for CPU and L2 Cache
+
 endif # CPU_FREQ_MSM
+
+config CPU_VOLTAGE_TABLE
+	bool "Enable CPU Voltage Table via sysfs for adjustements"
+	default n
+	help
+	  Krait User Votlage Control
 
 config MSM_AVS_HW
 	bool "Enable Adaptive Voltage Scaling (AVS)"
@@ -2782,6 +2802,14 @@ config SEC_THERMISTOR
 	default n
 	help
 	Use thermistor driver for checking temperature near AP chip.
+
+config FORCE_FAST_CHARGE
+	bool "Force AC charge mode at will"
+	default y
+	help
+	  A simple sysfs interface to force adapters that
+          are detected as USB to charge as AC.
+ 
 
 config SEC_FACTORY
 	bool "Enable FACTORY Features"
